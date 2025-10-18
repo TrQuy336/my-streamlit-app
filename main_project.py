@@ -78,6 +78,15 @@ def auto_fill_nulls(df):
 
 # TAB!: Data Analysis
 def tab_data_analysis():
+    
+    # Initialize session state for processed file
+    if "processed_file" not in st.session_state:
+        st.session_state.processed_file = False
+    if "df" not in st.session_state:
+        st.session_state.df = None
+    if "show_aggregate" not in st.session_state:
+        st.session_state.show_aggregate = False
+    
     modes = st.radio("Chọn file để xử lý", ["File nội bộ", "upload files"])
     if modes == "File nội bộ":
         try:
@@ -100,18 +109,37 @@ def tab_data_analysis():
                 df = pd.read_csv(upload_file)
                 st.success("Đã tải file lên")
                 st.dataframe(df)
+                st.session_state.df = df
+            except Exception as e:
+                st.error(f"Lỗi khi đọc file: {e}")
+                return None
+        else:
+            st.warning("Vui lòng tải lên file CSV để xử lý")
+            return None
+    # If data is loaded, proceed to null handling
+    if st.session_state.df is not None:
+        df = st.session_state.df.copy()
+        st.subheader("Xử lý giá trị null")
+        null_handling_mode = st.radio("Chọn phương pháp xử lý null", ["Tự động", "Thủ công"])
+        if null_handling_mode == "Tự động":
+            if st.button("Xử lý null tự động"):
+                with st.spinner("Đang xử lý giá trị null tự động..."):
+                    auto_fill_nulls(df)
+                    handle_season(df)
+                    st.dataframe(df)
+                    st.session_state.df = df
+                    st.session_state.null_processed = True
+                    st.success("Đã xử lý null tự động và cập nhật cột Season")
+        elif null_handling_mode == "Thủ công":
+            columns_to_nulls = st.multiselect("Chọn cột cần xử lý", df.columns)
+            if columns_to_nulls:
+                method = st.selectbox(
+                    "Chọn phương pháp điền null",
+                    ["Trung bình (mean)", "Trung vị (median)", "Mode", "Giá trị cụ thể"]
+                )
 
-                columns_to_nulls = st.multiselect("Chọn cột cần xử lý", df.columns)
-                if columns_to_nulls:
-                    method = st.selectbox(
-                        "Chọn phương pháp điền null",
-                        ["Trung bình (mean)", "Trung vị (median)", "Mode", "Giá trị cụ thể"]
-                    )
-                    
-                    if "processed_file" not in st.session_state:
-                        st.session_state.processed_file = False
-
-                    if st.button("Xử lý file"):
+                if st.button("Xử lý Null thủ công"):
+                    with st.spinner("Đang xử lý giá trị null thủ công..."):
                         for col in columns_to_nulls:
                             if method == "Trung bình (mean)" and df[col].dtype in [float, int]:
                                 df[col] = df[col].fillna(df[col].mean())
@@ -126,21 +154,30 @@ def tab_data_analysis():
                                     df[col] = df[col].fillna(fill_value)
                                 except:
                                     st.error("Giá trị không hợp lệ")
-                                    st.stop()
-                            # Gọi xử lý Season
-                            handle_season(df)
-                            st.success("File sau khi đã xử lý")
-                            st.dataframe(df)
-                            st.session_state.processed_file = True
-                if st.session_state.get("processed_file", False):
-                    return df
-                else:
-                    st.info("Hẫy xử lý file trước khi sử dụng")
-                    return None
+                                    return None         
+                        # Gọi xử lý Season
+                        handle_season(df)
+                        st.success("File sau khi đã xử lý")
+                        st.session_state.null_processed = True
+                        st.success("Đã xử lý Null thủ công thành công")
+                        st.dataframe(df)
+                        
+            else:
+                st.info("Vui lòng chọn ít nhất một cột để xử lý null")
+
+
+            # --- Sau khi xử lý Null xong ---
+        if st.session_state.get("null_processed", False):
+            st.divider()
+            st.subheader("📈 Tổng hợp & Vẽ biểu đồ")
+            
+            if st.button("Tổng hợp dữ liệu"):
+                st.session_state.show_analysis = True
                 
-            except Exception as e:
-                st.error(f"Lỗi khi đọc file: {e}")
-        return None
+                    # Khi bấm nút mới hiện phần chọn cột và biểu đồ
+            if st.session_state.get("show_analysis", False):
+                analyzer = DataAnalyzer(st.session_state.df)
+                analyzer.run()  # dùng class của bạn
 
 
 # TAB 2: Mapping Data
