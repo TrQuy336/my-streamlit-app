@@ -6,7 +6,6 @@ from class_supporter import *
 import openpyxl 
 from gemini_rag import *
 from PIL import Image
-import time
 
 # xuất file tổng hợp
 def export_monthly_report():
