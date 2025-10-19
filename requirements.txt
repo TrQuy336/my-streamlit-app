@@ -7,3 +7,5 @@ numpy
 seaborn
 python-dotenv
 xlwings
+from supporter import *
+google-generativeai
