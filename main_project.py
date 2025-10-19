@@ -258,7 +258,7 @@ def tab_mapping_data():
                         st.dataframe(df)
 
                         # xuất ra file excel mới
-                        output_path = "updated_data.xlsx"
+                        output_path = "mapping_data.xlsx"
                         df.to_excel(output_path, index=False)
                         st.success(f"Đã lưu kết quả vào file {output_path}")
 
@@ -287,7 +287,6 @@ def tab_gemini_rag():
     bot.run()
     if st.button("Reset tab Gemini Rag"):
         st.session_state.clear()
-
 
 
 

@@ -134,7 +134,6 @@ class PDFChatBot:
                 return
             with st.spinner("Đang tìm câu trả lời..."):
                 self.answer_question(user_question)
-            # if user_question:
-            #     self.answer_question(user_question)
+
 
     
