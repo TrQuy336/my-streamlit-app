@@ -6,3 +6,4 @@ pillow
 numpy
 seaborn
 python-dotenv
+xlwings
