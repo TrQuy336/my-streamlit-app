@@ -17,28 +17,28 @@ def plot_chart(folder_path, chart_type, data, x_col, y_col):
         chart.tick_params(rotation=45)
         chart_name = f"{chart_type}_{x_col}_by_{y_col}.png"
         chart_fig.savefig(f"./{folder_path}/{chart_name}")
-        # st.pyplot()
+        st.pyplot(chart_fig)
     elif chart_type == "Bar Chart":
         chart = sns.barplot(data=data, x=x_col, y=y_col)
         chart_fig = chart.get_figure()
         chart.tick_params(rotation=45)
         chart_name = f"{chart_type}_{x_col}_by_{y_col}.png"
         chart_fig.savefig(f"./{folder_path}/{chart_name}")
-        # st.pyplot()
+        st.pyplot(chart_fig)
     elif chart_type == "Scatter Plot":
         chart = sns.scatterplot(data=data, x=x_col, y=y_col)
         chart_fig = chart.get_figure()
         chart.tick_params(rotation=45)
         chart_name = f"{chart_type}_{x_col}_by_{y_col}.png"
         chart_fig.savefig(f"./{folder_path}/{chart_name}")
-        # st.pyplot()
+        st.pyplot(chart_fig)
     elif chart_type == "Pie Chart":
         pie_data = data.groupby(x_col)[y_col].sum()
         chart = pie_data.plot.pie(autopct='%1.1f%%', startangle=90)
         chart_fig = chart.get_figure()
         chart_name = f"{chart_type}_{x_col}_by_{y_col}.png"
         chart_fig.savefig(f"./{folder_path}/{chart_name}")
-        # st.pyplot()
+        st.pyplot(chart_fig)
 
     chart_path = f"D:\last_project/charts/{chart_name}"
 
