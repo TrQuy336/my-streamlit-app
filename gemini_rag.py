@@ -101,7 +101,7 @@ class PDFChatBot:
                 {"input_documents": docs, "question": user_question},
                 return_only_outputs=True
             )
-            st.write("**Trả lời:** ", response["output_text"])
+            st.write("Reply ", response["output_text"])
         except Exception as e:
             st.error(f"Lỗi khi trả lời câu hỏi: {str(e)}")
 

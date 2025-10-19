@@ -15,6 +15,10 @@ class DataAnalyzer:
             st.session_state.reports = []
         if "no" not in st.session_state:
             st.session_state.no = 0
+        
+        
+        
+        
             
     # hàm kiểm tra file tồn tại hay chưa
     def ensure_folder_exists(self):
@@ -24,6 +28,11 @@ class DataAnalyzer:
         except Exception as e:
             st.error(f"Lỗi không tìm thấy file: {str(e)}")
 
+
+
+
+
+
     # xác định kiểu dữ liệu
     def prepare_data(self):
         object_cols = self.df.select_dtypes(include="object").columns
@@ -32,6 +41,10 @@ class DataAnalyzer:
 
         self.categorical_columns = self.df.select_dtypes(include=["string"]).columns.tolist()
         self.numeric_columns = self.df.select_dtypes(include="number").columns.tolist()
+
+
+
+
 
 
     # hàm chọn và tổng hợp dữ liệu
@@ -66,6 +79,10 @@ class DataAnalyzer:
         return agg_func, category_col, numeric_col
 
 
+
+
+
+
     # hàm vẽ biểu đồ và lưu
     def plot_and_save_chart(self, aggregated_data, category_col, numeric_col):
         chart_type = st.selectbox("Chọn loại biểu đồ", ["Line Chart", "Bar Chart", "Scatter Plot", "Pie Chart"])
@@ -92,6 +109,9 @@ class DataAnalyzer:
             
             
             
+            
+            
+            
     # hiển thị biểu đồ
     def show_reports(self):
 
@@ -107,7 +127,10 @@ class DataAnalyzer:
                         remove_chart(file_path)
                         st.session_state.reports.pop(i)
                         st.rerun()
+                        
+                        
 
+    # hàm chạy
     def run(self):
         self.prepare_data()
         aggregated_data, cat_col, num_col = self.aggregate_data()
