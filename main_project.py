@@ -28,6 +28,8 @@ def export_monthly_report():
     with open(save_path, "rb") as f:
         st.download_button("Tải file excel tổng hợp", f, file_name="report_monthly.xlsx")
         
+        
+        
 
 # check datetime
 def is_date_str( s):
@@ -36,6 +38,9 @@ def is_date_str( s):
         return True
     except:
         return False
+
+
+
 
 # chuyển tháng thành mùa
 def month_to_season(month):
@@ -49,6 +54,10 @@ def month_to_season(month):
         return "Fall"
     else:
         return "Unknown"
+
+
+
+
 
 # xử lý cột season
 def handle_season(df):
@@ -65,6 +74,11 @@ def handle_season(df):
         else:
             df["Season"] = df["Season"].fillna("Unknown")
 
+
+
+
+
+
 # fill null tự động
 def auto_fill_nulls(df):
         for col in df.columns:
@@ -76,16 +90,22 @@ def auto_fill_nulls(df):
                     df[col] = df[col].fillna(df[col].mode()[0])
         st.success("File sau khi đã xử lý")
 
+
+
+
+
 # TAB!: Data Analysis
 def tab_data_analysis():
     
-    # Initialize session state for processed file
+    
+    # đặt giá trị mặc định ban đầu
     if "processed_file" not in st.session_state:
         st.session_state.processed_file = False
     if "df" not in st.session_state:
         st.session_state.df = None
     if "show_aggregate" not in st.session_state:
         st.session_state.show_aggregate = False
+    
     
     modes = st.radio("Chọn file để xử lý", ["File nội bộ", "upload files"])
     if modes == "File nội bộ":
@@ -116,7 +136,9 @@ def tab_data_analysis():
         else:
             st.warning("Vui lòng tải lên file CSV để xử lý")
             return None
-    # If data is loaded, proceed to null handling
+        
+        
+    # nếu thông tin được load thì null sẽ được xử lý
     if st.session_state.df is not None:
         df = st.session_state.df.copy()
         st.subheader("Xử lý giá trị null")
@@ -166,18 +188,30 @@ def tab_data_analysis():
                 st.info("Vui lòng chọn ít nhất một cột để xử lý null")
 
 
-            # --- Sau khi xử lý Null xong ---
+
+
+            # Sau khi xử lý Null xong 
         if st.session_state.get("null_processed", False):
             st.divider()
-            st.subheader("📈 Tổng hợp & Vẽ biểu đồ")
+            st.subheader("Tổng hợp & Vẽ biểu đồ")
             
             if st.button("Tổng hợp dữ liệu"):
                 st.session_state.show_analysis = True
                 
-                    # Khi bấm nút mới hiện phần chọn cột và biểu đồ
             if st.session_state.get("show_analysis", False):
                 analyzer = DataAnalyzer(st.session_state.df)
-                analyzer.run()  # dùng class của bạn
+                analyzer.run()
+    
+    # nút reset
+    if st.button("Reset tab Data Analysis"):
+        st.session_state.clear()
+
+
+
+
+
+
+
 
 
 # TAB 2: Mapping Data
@@ -236,11 +270,28 @@ def tab_mapping_data():
                             )
                 except Exception as e:
                     st.error(f"Lỗi khi xử lý: {e}")
+                    
+    if st.button("Reset tab Mapping Data"):
+        st.session_state.clear()
+
+
+
+
+
+
+
 
 # TAB 3: Gemini Rag
 def tab_gemini_rag():
     bot = PDFChatBot()
     bot.run()
+    if st.button("Reset tab Gemini Rag"):
+        st.session_state.clear()
+
+
+
+
+
 
 
 # hàm chính
@@ -248,9 +299,9 @@ def main():
     st.set_page_config(page_title="Data Cleaning App", layout="wide")
     st.title("Data Preprocessing — Truong Quy")
     
-
     # Tạo Tabs
     tab1, tab2, tab3 = st.tabs(["Data Analysis", "Mapping Data", "Gemini RAG"])
+
 
     df = None
     with tab1:
