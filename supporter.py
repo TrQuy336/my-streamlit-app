@@ -40,7 +40,7 @@ def plot_chart(folder_path, chart_type, data, x_col, y_col):
         chart_fig.savefig(f"./{folder_path}/{chart_name}")
         # st.pyplot()
 
-    chart_path = f"D:\last_project_demo/charts/{chart_name}"
+    chart_path = f"D:\last_project/charts/{chart_name}"
 
     return chart_path, chart_name
 
